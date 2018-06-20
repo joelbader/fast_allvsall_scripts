@@ -1,10 +1,12 @@
 ## Fast, threaded scripts for comparing proteomes with Needleman\-Wunsch alignment (all vs all) 
 
+These scripts exploit existing fast implementations of the Needleman-Wunsch global alignment algorithm (opal and parasail) to quickly find all closely related proteins between multiple proteomes and compile these into a small database. This supports an upcoming publication.
+
 ### Dependencies
 You will need to have installed:
-* opal (opal\_aligner)
-* Parasail (with python3 API)
-* Common python libraries - see top of scripts for a list
+* [opal](https://github.com/Martinsos/opal) (opal\_aligner)
+* [parasail](https://github.com/jeffdaily/parasail) (with python3 API)
+* Common python3 libraries - see top of build\_homology\_database.py and unpack\_pickle.py for these
 
 ### How to use
 1. Clone this repo to a folder. The subfolder "./genomes/" is required.
