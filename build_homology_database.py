@@ -6,36 +6,41 @@ import pandas as pd
 import numpy as np
 from Bio import SeqIO
 import subprocess
-import re
 import time
 import parasail
 from queue import Queue
 import threading
 import os
 
-#Remove these dependencies after debugging
-import pdb
-
-
-#Parameters:
+#Parameters and filenames:
 num_threads=8
-req_match_fraction = 0.50 #This fraction of query length must match to any similar sequences in order to be counted as homologous
+req_match_fraction = 0.50 #This fraction of query length must match to any similar sequences in order to be included in the pickle.
+num_entries = -1 #Number of proteins to query from each genome. Set this to -1 to run through all genes. Useful for doing small testing runs
 
-num_entries = -1 #Set this to -1 to run through all genes, useful for doing small runs
+#output_pickle_filename = glob.glob("*.pickle")[0]
+output_pickle_filename = 'mhdb_'+str(round(100*req_match_fraction))+'.pickle'
 
 def main():
     #Get names of all *.fa files in current directory 
     genomes = glob.glob("genomes/*.fa")
     #If no database (pickle) is provided then create it, otherwise read it in
-    pick = glob.glob("*.pickle")
-    if pick and False: #TODO: Remove "and False" when running this for real
+    try:
         #Read it in
-        with open(pick[0], 'rb') as fp:
-            db = pickle.load(fp)
+        fp = open(output_pickle_filename, 'rb')
+        db = pickle.load(fp)
         fp.close()
-    else:
+    except FileNotFoundError:
         #Create the dataframe
         db = pd.DataFrame()
+
+#    if pick:
+#        #Read it in
+#        with open(pick[0], 'rb') as fp:
+#            db = pickle.load(fp)
+#        fp.close()
+#    else:
+#        #Create the dataframe
+#        db = pd.DataFrame()
     
     #Compare current database with available *.fa - if any rows/columns don't exist then expand the matrix to include them. If any are extraneous then delete them.
     if not (set(db.columns) == set(db.index)):
@@ -47,7 +52,7 @@ def main():
         db.drop(to_drop,axis = 0)
         db.drop(to_drop,axis = 1)
     if not bool(set(genomes).issubset(db.columns)):
-        #Add genomes subtract db.columns to db
+        #Add genomes (subtract db.columns) to db
         new = set(genomes).difference(db.columns)
         for c in new:
             db[c] = np.nan
@@ -69,7 +74,6 @@ def main():
         t.start()
 
     q.join()
-    #print(db)
     print('Entire job took (sec):',time.time()-start)
 
 def threader(q,db,db_write_lock):
@@ -78,7 +82,7 @@ def threader(q,db,db_write_lock):
         temp_dict = genome_vs_genome(gen1,gen2)
         with db_write_lock:
             db.at[gen1,gen2] = temp_dict
-            with open('database_0.50.pickle', 'wb') as fp:
+            with open(output_pickle_filename, 'wb') as fp:
                 pickle.dump(db, fp)
         q.task_done()
 
@@ -118,11 +122,6 @@ def genome_vs_genome(gen1, gen2):
         #t3 = time.time()
         #print("t1-t0: ",t1-t0,"t2-t1: ",t2-t1,"t3-t2: ",t3-t2)
 
-        #Use EMBOSS needle to follow-up on candidate hits
-        #subprocess.run('./needle query_gene.fa PARSE_OUT.fa -datafile WM_IDENTITY_MATRIX -gapopen=10 -gapextend=0.5 -endweight=Y -endopen=10 -endextend=0.5 -brief=Y -outfile=OUTPUT.needle', shell=True)
-        #needle_cline = NeedleCommandline(asequence='query_gene.fa', bsequence='PARSE_OUT.fa', datafile='WM_IDENTITY_MATRIX', gapopen=10, gapextend=0.5, endweight='Y', endopen=10, endextend=0.5, brief='Y', outfile="OUTPUT.needle")
-        #needle_cline()
-
         homolog_db[gene.id]=homolog_ls
         i += 1
         if i == num_entries:
@@ -131,33 +130,7 @@ def genome_vs_genome(gen1, gen2):
     os.remove(opal_output)
     os.remove(parse_out)
 
-    #print(homolog_db)
-
     return(homolog_db)
-
-def parse_needle(needle_filename, fa_filename, thresh):
-    #This function is no longer necessary since switch to parasail - consider removing
-    needle_in  = open(needle_filename, "r")
-    fasta_in  = open(fa_filename, "r")
-    
-    needle_no_head = needle_in.readlines()[18:]
-    gene_name_ls = list()
-    
-    for i,line in enumerate(needle_no_head):
-        if line[0:11]=='# Identity:':
-            comment = next(fasta_in)
-            print(comment)
-            sequence = next(fasta_in)
-            split_ls = re.split('[#: ,()/\n]+',line)
-            num_match = split_ls[2]
-            query_len = split_ls[3]
-            identity = float(num_match)/(float(query_len))
-            if identity > thresh:
-                gene_name_ls.append(comment[1:12]) #This will likely depend on which genbank file
-
-    needle_in.close()
-    fasta_in.close()
-    return(gene_name_ls)
 
 if __name__ == '__main__':
     main()
