@@ -1,0 +1,7 @@
+*.pickle
+*.xlsx
+*.fa
+*.gb
+opal_aligner
+avium_homology_script.sh
+genomes/*.py
