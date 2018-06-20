@@ -17,7 +17,7 @@ You will need to have installed:
 1. Run ./build\_homology\_database.py. This will output a pickle (mhdb\_\*.pickle). With 8 mycobacterial genomes this ran for about 7 hours on an Intel i7-7700HQ CPU @ 2.80GHz.
 1. Run ./unpack\_pickle.py. This will output an excel file (mhdb\_\*.xlsx) containing data from the all vs all comparisons.
 
-###Notes
+### Notes
 * If you modify the proteomes contained in "./genomes/" then build\_homology\_database.py will only compute proteome comparisons which are needed in the new database (and does not recompute all comparisons). For example, if you run build\_homology\_database.py and then remove a proteome from ./genomes/ then NW alignment does not actually need to be called. However, the entries of the removed proteome will be deleted from the database.
 
 If you have issues or feedback, please feel free to contact me:
