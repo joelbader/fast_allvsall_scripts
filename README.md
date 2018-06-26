@@ -1,6 +1,9 @@
 ## Fast, threaded scripts for comparing proteomes with Needleman\-Wunsch alignment (all vs all) 
 
-These scripts exploit existing fast implementations of the Needleman-Wunsch global alignment algorithm (opal and parasail) to quickly find all closely related proteins between multiple proteomes and compile these into a small database. This supports an upcoming publication.
+These scripts exploit existing fast implementations of the Needleman-Wunsch global alignment algorithm (opal and parasail) to quickly find all closely related proteins between multiple proteomes and compile these into a small database. This supports our upcoming publication:
+
+Matern et al. Complete genome sequence of Mycobacterium avium subsp. hominissuis strain 109 (MAC109) and mycobacterial homology analysis. Frontiers in Microbiology. 2018.
+
 
 ### Dependencies
 You will need to have installed:

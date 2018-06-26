@@ -5,7 +5,7 @@ import pandas as pd
 import xlsxwriter
 
 #Parameters and Settings:
-req_match_fraction = 0.75 #Any matches below this fraction identity will not be copied from the pickle to the output excel file
+req_match_fraction = 0.90 #Any matches below this fraction identity will not be copied from the pickle to the output excel file
 pickle_filename = "mhdb_50.pickle" #Input *.pickle file
 output_excel_filename = 'mhdb_'+str(round(100*req_match_fraction))+'.xlsx'
 
