@@ -2,7 +2,7 @@
 
 These scripts exploit existing fast implementations of the Needleman-Wunsch global alignment algorithm (opal and parasail) to quickly find all closely related proteins between multiple proteomes and compile these into a small database. This supports our upcoming publication:
 
-Matern et al. Complete genome sequence of Mycobacterium avium subsp. hominissuis strain 109 (MAC109) and mycobacterial homology analysis. Frontiers in Microbiology. 2018.
+Matern WM, Bader, JS, Karakousis PC. Genome data for Mycobacterium avium subsp. hominissuis strain 109. Scientific Data. 2018.
 
 
 ### Dependencies
