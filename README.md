@@ -8,7 +8,7 @@ Matern WM, Bader, JS, Karakousis PC. Genome data for Mycobacterium avium subsp. 
 ### Dependencies
 You will need to have installed:
 * [opal](https://github.com/Martinsos/opal) (opal\_aligner)
-* [parasail](https://github.com/jeffdaily/parasail) (with python3 API)
+* [parasail-python](https://github.com/jeffdaily/parasail-python) (python3 API for parasail)
 * Common python3 libraries - see top of build\_homology\_database.py and unpack\_pickle.py for these
 
 ### How to use
